@@ -1,11 +1,8 @@
-//#include <LCD.h>
-//#include <Wire.h>
 #include "pb100.h"
 
+// Déclaration des variables
 float mesure;
-
-// Déclaration de ma maquette PB100
-Pb100 pb100;
+Pb100 pb100; // Déclaration de ma maquette PB100
 
 void setup() {
   Serial.begin(115200);
