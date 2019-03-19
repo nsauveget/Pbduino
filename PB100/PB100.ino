@@ -1,4 +1,4 @@
-#include "pb100.h"
+#include "pbduino.h"
 
 // Déclaration des variables
 float mesure;
