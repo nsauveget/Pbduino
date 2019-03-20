@@ -2,7 +2,7 @@
 #include "pbduino.h"
 
 // Déclaration des variables
-float mesure;
+float distance;
 Pb100 *pb100; // Déclaration de ma maquette PB100
 
 void setup() {
@@ -13,15 +13,20 @@ void setup() {
 
 void loop() {
 
-  mesure = pb100->mesure();
-  Serial.println("Mesure : " + String(mesure,4) + "mm");
-  
-  pb100->lcd().println("Distance : " + String(mesure));
-  if (mesure > 100){
+  distance = pb100->distance();
+  Serial.println("Mesure : " + String(distance,4) + "mm");
+
+  pb100->lcd().setCursor(0,1);
+  if (distance ==0){
+    pb100->lcd().print("Distance: ???   ");
+  }else{
+    pb100->lcd().print("Distance: " + String(distance,0) + "mm ");
+  }
+  if (distance > 100){
     pb100->allume_led_verte();
     pb100->eteint_led_rouge();
     pb100->noBuzzer();
-  }else if (mesure != 0){
+  }else if (distance != 0){
     pb100->allume_led_rouge();
     pb100->eteint_led_verte();
     pb100->buzzer();

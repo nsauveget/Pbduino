@@ -19,11 +19,11 @@ Classe Pbduino
 CONSTRUCTEUR
 */
 Pbduino::Pbduino():  _pin_led_verte(0), _pin_led_rouge(0), _pin_led_jaune(0), _pin_led_bleu(0), _pin_buzzer(0), _tone_frequency(440){
-  Serial.println("aaaaaaCreation Pbduino");
-  delay(1000);
+  Serial.println("Creation Pbduino");
 }
 
 Pbduino::~Pbduino(){
+
 }
 
 
@@ -196,9 +196,14 @@ Pb100::Pb100(): Pbduino(), _pin_trigger(8), _pin_echo(9){
   pinMode(_pin_echo, INPUT);
   _lcd = new LiquidCrystal_I2C(0x20,16,2);
   _lcd->init();
+  delay(2000);
   _lcd->backlight();
+  delay(500);
+  _lcd->clear();
+  delay(500);
+  _lcd->setCursor(0,0);
   _lcd->print("PIERRON - PB100");
-  delay(1000);
+  _lcd->setCursor(0,1);
 }
 
 Pb100::~Pb100(){
@@ -214,7 +219,7 @@ LiquidCrystal_I2C Pb100::lcd(){
 ////////////////
 
 // Mesure la distance ou 0 si echec
-float Pb100::mesure() const{
+float Pb100::distance() const{
   //Déclenche le trigger
   digitalWrite(_pin_trigger, HIGH);
   delayMicroseconds(10);

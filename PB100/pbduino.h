@@ -78,7 +78,7 @@ elle contient :
   ~Pb100();
   //Pb100(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_buzzer, uint8_t pin_trigger, uint8_t pin_echo, uint8_t lcd_i2c_addr, uint8_t lcd_rows, uint8_t lcd_cols);
 
-  float mesure() const;
+  float distance() const;
   LiquidCrystal_I2C lcd();
 
   private :
