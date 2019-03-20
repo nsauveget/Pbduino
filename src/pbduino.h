@@ -8,6 +8,9 @@ Auteur : fthome
 */
 
 // Un peu de constantes (meme si pour la vitesse du son c'est discutable!)
+#ifndef Pbduino_h
+#define Pbduino_h
+
 #include <stdarg.h>
 #include "LiquidCrystal_I2C.h"
 #include <Arduino.h>
@@ -22,7 +25,6 @@ class Pbduino{
 /*Une classe maitre avec les mécanismes communs à toutes les maquettes
     - gestion des LEDS
     - gestion du BUZZER
-    - gestion affichage
 */
   public :
   Pbduino();
@@ -51,6 +53,7 @@ class Pbduino{
 
   protected :
 
+  String _name;
   uint8_t _pin_led_verte;
   uint8_t _pin_led_rouge;
   uint8_t _pin_led_jaune;
@@ -62,7 +65,26 @@ class Pbduino{
 
 };
 
-class Pb100 : public Pbduino{
+class Pbduino_lcd : public Pbduino{
+  /* Une sous classe de Pbduino pour les modules avec afficheur LCD
+  */
+
+  public :
+  Pbduino_lcd();
+  ~Pbduino_lcd();
+  void init();
+  LiquidCrystal_I2C lcd();
+  void affiche(String txt);
+  void affiche(String txt, int row);
+  void affiche(String txt, int row, int col);
+
+  protected :
+  LiquidCrystal_I2C *_lcd;
+  uint8_t _lcd_cols;
+  uint8_t _lcd_rows;
+};
+
+class Pb100 : public Pbduino_lcd{
 /*Une sous classe pour la maquette Pb100
 elle contient :
   - une led verte
@@ -73,22 +95,14 @@ elle contient :
 */
 
   public :
-
   Pb100();
-  ~Pb100();
-  //Pb100(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_buzzer, uint8_t pin_trigger, uint8_t pin_echo, uint8_t lcd_i2c_addr, uint8_t lcd_rows, uint8_t lcd_cols);
-
+  void init();
   float distance() const;
-  LiquidCrystal_I2C lcd();
 
   private :
-
   void _Pb100();
-
   uint8_t _pin_trigger;
   uint8_t _pin_echo;
-  LiquidCrystal_I2C *_lcd;
-
 };
 
 class Pb200 : public Pbduino{
@@ -105,10 +119,7 @@ elle contient :
   - un buzzer
 */
   public :
-
   Pb200();
-  //Pb200(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_led_jaune, uint8_t pin_led_bleu, int8_t pin_buzzer, uint8_t pin_bt_vert, uint8_t pin_bt_rouge, uint8_t pin_bt_jaune, uint8_t pin_bt_bleu );
-
   int get_bouton_vert() const;
   int get_bouton_rouge() const;
   int get_bouton_bleu() const;
@@ -116,16 +127,14 @@ elle contient :
   int get_bouton(uint8_t buton_no) const;
 
   private :
-
   void _Pb200();
   uint8_t _pin_bt_vert;
   uint8_t _pin_bt_rouge;
   uint8_t _pin_bt_jaune;
   uint8_t _pin_bt_bleu;
-
 };
 
-class Pb300 : public Pbduino{
+class Pb300 : public Pbduino_lcd{
   /* Une sous classe pour la maquette Pb300
   elle contient :
     - une led verte
@@ -135,20 +144,14 @@ class Pb300 : public Pbduino{
     - deux photoresistances branchées en diviseur de tension sur deux entrées analogiques
   */
   public :
-
   Pb300();
-  ~Pb300();
-  //Pb300(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_buzzer, uint8_t pin_photo_1, uint8_t pin_photo2, uint8_t lcd_i2c_addr, uint8_t lcd_rows, uint8_t lcd_cols);
-
+  void init();
   int get_photo1() const;
   int get_photo2() const;
-  LiquidCrystal_I2C lcd();
 
   private :
-
   uint8_t _pin_photo_1;
   uint8_t _pin_photo_2;
   void _Pb300();
-  LiquidCrystal_I2C *_lcd;
-
 };
+#endif

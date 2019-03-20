@@ -7,6 +7,7 @@ Pb100 pb100; // Déclaration de ma maquette PB100
 
 void setup() {
   Serial.begin(9600);
+  //pb100 = new Pb100();
   Serial.print("PIERRON - PB100");
   pb100.init();
 }

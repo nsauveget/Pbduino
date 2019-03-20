@@ -11,7 +11,7 @@ Auteur : fthome
 #include "pbduino.h"
 
 /*
-Classe Pbduino
+********************   Classe Pbduino   ********************
 */
 
 
@@ -19,7 +19,7 @@ Classe Pbduino
 CONSTRUCTEUR
 */
 Pbduino::Pbduino():  _pin_led_verte(0), _pin_led_rouge(0), _pin_led_jaune(0), _pin_led_bleu(0), _pin_buzzer(0), _tone_frequency(440){
-  Serial.println("Creation Pbduino");
+  //Serial.println("Creation Pbduino");
 }
 
 Pbduino::~Pbduino(){
@@ -28,8 +28,6 @@ Pbduino::~Pbduino(){
 
 
 void Pbduino::init(){
-  //Initialisation de la frequence du buzzer
-  _tone_frequency = 440;
   //Initialisation des leds
   if (_pin_led_verte>0){
     pinMode(_pin_led_verte, OUTPUT);
@@ -178,23 +176,18 @@ void Pb100::play(int n, ...) const{
 */
 
 /*
-Classe Pb100
+********************   Classe Pbduino_lcd   ********************
+Une sous classe de Pbduino pour les modules avec afficheur LCD
 */
 
-/*
-CONSTRUCTEURS
-*/
-
-Pb100::Pb100(): Pbduino(), _pin_trigger(8), _pin_echo(9){
-  Serial.println("Creation Pb100");
-  _pin_led_verte = 3;
-  _pin_led_rouge = 4;
-  _pin_buzzer=2;
-  init();
-  pinMode(_pin_trigger, OUTPUT);
-  digitalWrite(_pin_trigger, LOW);
-  pinMode(_pin_echo, INPUT);
-  _lcd = new LiquidCrystal_I2C(0x20,16,2);
+Pbduino_lcd::Pbduino_lcd(): Pbduino(), _lcd_cols(16), _lcd_rows(2){
+}
+Pbduino_lcd::~Pbduino_lcd(){
+  delete _lcd;
+}
+void Pbduino_lcd::init(){
+  Pbduino::init();
+  _lcd = new LiquidCrystal_I2C(0x20,_lcd_cols,_lcd_rows);
   _lcd->init();
   delay(2000);
   _lcd->backlight();
@@ -202,21 +195,54 @@ Pb100::Pb100(): Pbduino(), _pin_trigger(8), _pin_echo(9){
   _lcd->clear();
   delay(500);
   _lcd->setCursor(0,0);
-  _lcd->print("PIERRON - PB100");
+  _lcd->print("PIERRON - " + _name);
   _lcd->setCursor(0,1);
 }
 
-Pb100::~Pb100(){
-  delete _lcd;
-}
-
-LiquidCrystal_I2C Pb100::lcd(){
+LiquidCrystal_I2C Pbduino_lcd::lcd(){
   return *_lcd;
 }
 
-////////////////
-// HC-SR04    //
-////////////////
+void Pbduino_lcd::affiche(String txt){
+  affiche(txt, 0,0);
+}
+void Pbduino_lcd::affiche(String txt, int row){
+  affiche(txt,row,0);
+}
+void Pbduino_lcd::affiche(String txt, int row, int col){
+  while (txt.length()<_lcd_cols){
+    txt += " ";
+  }
+  _lcd->setCursor(col, row);
+  _lcd->print(txt);
+}
+
+
+
+/*
+********************   Classe Pb100   ********************
+Une sous classe pour la maquette Pb100
+elle contient :
+  - une led verte
+  - une led rouge
+  - un buzzer
+  - un module HC-SR04 pour mesurer une distance
+  _ un afficheur LCD 16x2
+*/
+
+Pb100::Pb100(): Pbduino_lcd(), _pin_trigger(8), _pin_echo(9){
+  _pin_led_verte = 3;
+  _pin_led_rouge = 4;
+  _pin_buzzer=2;
+  _name = "PB100";
+}
+
+void Pb100::init(){
+  Pbduino_lcd::init();
+  pinMode(_pin_trigger, OUTPUT);
+  digitalWrite(_pin_trigger, LOW);
+  pinMode(_pin_echo, INPUT);
+}
 
 // Mesure la distance ou 0 si echec
 float Pb100::distance() const{
@@ -224,12 +250,13 @@ float Pb100::distance() const{
   digitalWrite(_pin_trigger, HIGH);
   delayMicroseconds(10);
   digitalWrite(_pin_trigger, LOW);
+  //Attend le retour du signal et renvoie la distance calculée
   return pulseIn(_pin_echo, HIGH, TIMEOUT) / 2.0 * VITESSE_DU_SON;
 }
 
 
 /*
-Classe Pb200
+********************   Classe Pb200   ********************
     Une sous classe pour la maquette Pb200
     elle contient :
       - une led verte
@@ -243,9 +270,6 @@ Classe Pb200
       - un buzzer
 */
 
-/*
-CONSTRUCTEURS
-*/
 Pb200::Pb200(){
   _pin_led_verte = 4;
   _pin_led_rouge = 2;
@@ -256,9 +280,10 @@ Pb200::Pb200(){
   _pin_bt_vert = 9;
   _pin_bt_jaune = 12;
   _pin_bt_rouge = 11;
-  init();
+  _name = "PB200";
 }
 
+//void Pb200::init(){} Pas necessaire de surchager!
 
 int Pb200::get_bouton_vert() const{
   return digitalRead(_pin_bt_vert);
@@ -277,7 +302,8 @@ int Pb200::get_bouton(uint8_t buton_no) const{
 }
 
 /*
-Classe Pb300
+********************   Classe Pb300   ********************
+
      Une sous classe pour la maquette Pb300
     elle contient :
       - une led verte
@@ -287,28 +313,19 @@ Classe Pb300
       - deux photoresistances branchées en diviseur de tension sur deux entrées analogiques
 */
 
-/*
-CONSTRUCTEURS
-*/
-
-
-Pb300::Pb300():Pbduino(), _pin_photo_1(A0), _pin_photo_2(A1){
+Pb300::Pb300():Pbduino_lcd(), _pin_photo_1(A0), _pin_photo_2(A1){
   _pin_led_verte = 2;
   _pin_led_rouge = 4;
   _pin_buzzer = 6;
-  init();
-  _lcd = new LiquidCrystal_I2C(0x20,20,4);
-  _lcd->init();
-  _lcd->backlight();
-  _lcd->print("PIERRON - PB300");
+  _name = "PB300";
+  _lcd_cols = 20;
+  _lcd_rows = 4;
 }
 
-Pb300::~Pb300(){
-  delete _lcd;
-}
-
-LiquidCrystal_I2C Pb300::lcd(){
-  return *_lcd;
+void Pb300::init(){
+  Pbduino_lcd::init();
+  pinMode(_pin_photo_1, INPUT);
+  pinMode(_pin_photo_2, INPUT);
 }
 
 int Pb300::get_photo1() const{
