@@ -11,9 +11,11 @@ Auteur : fthome
 #include <stdarg.h>
 #include "LiquidCrystal_I2C.h"
 #include <Arduino.h>
+//#include "property.h"
 
 const unsigned long TIMEOUT = 25000;
 const float VITESSE_DU_SON = 340.0 / 1000;
+
 
 
 class Pbduino{
@@ -23,7 +25,8 @@ class Pbduino{
     - gestion affichage
 */
   public :
-  Pbduino(); // A voir si vraiment utile!
+  Pbduino();
+  ~Pbduino();
 
   void set_led_verte(uint8_t state) const;
   void allume_led_verte() const;
@@ -44,8 +47,7 @@ class Pbduino{
   void noBuzzer() const;
   //void playBuzzer(int n, ...) const;
 
-  void affiche();
-  LiquidCrystal_I2C *lcd;
+  //void init_lcd();
 
   protected :
 
@@ -73,9 +75,11 @@ elle contient :
   public :
 
   Pb100();
-  Pb100(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_buzzer, uint8_t pin_trigger, uint8_t pin_echo, uint8_t lcd_i2c_addr, uint8_t lcd_rows, uint8_t lcd_cols);
+  ~Pb100();
+  //Pb100(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_buzzer, uint8_t pin_trigger, uint8_t pin_echo, uint8_t lcd_i2c_addr, uint8_t lcd_rows, uint8_t lcd_cols);
 
   float mesure() const;
+  LiquidCrystal_I2C lcd();
 
   private :
 
@@ -83,6 +87,7 @@ elle contient :
 
   uint8_t _pin_trigger;
   uint8_t _pin_echo;
+  LiquidCrystal_I2C *_lcd;
 
 };
 
@@ -102,7 +107,7 @@ elle contient :
   public :
 
   Pb200();
-  Pb200(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_led_jaune, uint8_t pin_led_bleu, int8_t pin_buzzer, uint8_t pin_bt_vert, uint8_t pin_bt_rouge, uint8_t pin_bt_jaune, uint8_t pin_bt_bleu );
+  //Pb200(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_led_jaune, uint8_t pin_led_bleu, int8_t pin_buzzer, uint8_t pin_bt_vert, uint8_t pin_bt_rouge, uint8_t pin_bt_jaune, uint8_t pin_bt_bleu );
 
   int get_bouton_vert() const;
   int get_bouton_rouge() const;
@@ -132,16 +137,18 @@ class Pb300 : public Pbduino{
   public :
 
   Pb300();
-  Pb300(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_buzzer, uint8_t pin_photo_1, uint8_t pin_photo2, uint8_t lcd_i2c_addr, uint8_t lcd_rows, uint8_t lcd_cols);
+  ~Pb300();
+  //Pb300(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_buzzer, uint8_t pin_photo_1, uint8_t pin_photo2, uint8_t lcd_i2c_addr, uint8_t lcd_rows, uint8_t lcd_cols);
 
   int get_photo1() const;
   int get_photo2() const;
+  LiquidCrystal_I2C lcd();
 
   private :
 
   uint8_t _pin_photo_1;
   uint8_t _pin_photo_2;
   void _Pb300();
-
+  LiquidCrystal_I2C *_lcd;
 
 };

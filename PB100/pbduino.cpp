@@ -18,12 +18,19 @@ Classe Pbduino
 /*
 CONSTRUCTEUR
 */
-Pbduino::Pbduino(){
+Pbduino::Pbduino():  _pin_led_verte(0), _pin_led_rouge(0), _pin_led_jaune(0), _pin_led_bleu(0), _pin_buzzer(0), _tone_frequency(440){
+  Serial.println("aaaaaaCreation Pbduino");
+  delay(1000);
+}
+
+Pbduino::~Pbduino(){
 }
 
 
 void Pbduino::init(){
-  _tone_frequency = 0;
+  //Initialisation de la frequence du buzzer
+  _tone_frequency = 440;
+  //Initialisation des leds
   if (_pin_led_verte>0){
     pinMode(_pin_led_verte, OUTPUT);
   }
@@ -36,10 +43,21 @@ void Pbduino::init(){
   if (_pin_led_bleu>0){
     pinMode(_pin_led_bleu, OUTPUT);
   }
+  //Initialisation du buzzer
   if (_pin_buzzer>0){
     pinMode(_pin_buzzer, OUTPUT);
   }
 }
+
+/*
+void Pbduino::init_lcd(uint8_t addr, uint8_t cols, uint8_t rows){
+  _lcd = new LiquidCrystal_I2C(addr, cols, rows);
+  _lcd->init()
+  _lcd->backlight();
+  _lcd->print("PIERRON");
+  delay(1000);
+}
+*/
 
 /////////////////
 // LES LEDS    //
@@ -167,34 +185,28 @@ Classe Pb100
 CONSTRUCTEURS
 */
 
-Pb100::Pb100(){
+Pb100::Pb100(): Pbduino(), _pin_trigger(8), _pin_echo(9){
+  Serial.println("Creation Pb100");
   _pin_led_verte = 3;
   _pin_led_rouge = 4;
-  _pin_buzzer = 2;
-  _pin_trigger = 8;
-  _pin_echo = 9;
-  //TODO : lcd = 
-  //_lcd_rows = 4
-  //_lcd_cols = 20;
-  //_lcd_i2c_addr = 0x20;
-  _Pb100();
-}
-
-Pb100::Pb100(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_buzzer, uint8_t pin_trigger, uint8_t pin_echo, uint8_t lcd_i2c_addr, uint8_t lcd_rows, uint8_t lcd_cols){
-  _pin_led_verte = pin_led_verte;
-  _pin_led_rouge = pin_led_rouge;
-  _pin_buzzer = pin_buzzer;
-  _pin_trigger = pin_trigger;
-  _pin_echo = pin_echo;
-  //_lcd_i2c_addr = lcd_i2c_addr;
-  _Pb100();
-}
-// Initialisation de la carte
-void Pb100::_Pb100(){
+  _pin_buzzer=2;
   init();
   pinMode(_pin_trigger, OUTPUT);
   digitalWrite(_pin_trigger, LOW);
   pinMode(_pin_echo, INPUT);
+  _lcd = new LiquidCrystal_I2C(0x20,16,2);
+  _lcd->init();
+  _lcd->backlight();
+  _lcd->print("PIERRON - PB100");
+  delay(1000);
+}
+
+Pb100::~Pb100(){
+  delete _lcd;
+}
+
+LiquidCrystal_I2C Pb100::lcd(){
+  return *_lcd;
 }
 
 ////////////////
@@ -239,25 +251,9 @@ Pb200::Pb200(){
   _pin_bt_vert = 9;
   _pin_bt_jaune = 12;
   _pin_bt_rouge = 11;
-  _Pb200();
-}
-
-Pb200::Pb200(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_led_jaune, uint8_t pin_led_bleu, int8_t pin_buzzer, uint8_t pin_bt_vert, uint8_t pin_bt_rouge, uint8_t pin_bt_jaune, uint8_t pin_bt_bleu ){
-  _pin_led_verte = pin_led_verte;
-  _pin_led_rouge = pin_led_rouge;
-  _pin_led_bleu = pin_led_bleu;
-  _pin_led_jaune = pin_led_jaune;
-  _pin_buzzer = pin_buzzer;
-  _pin_bt_bleu = pin_bt_bleu;
-  _pin_bt_vert = pin_bt_vert;
-  _pin_bt_jaune = pin_bt_jaune;
-  _pin_bt_rouge = pin_bt_rouge;
-  _Pb200();
-}
-
-void Pb200::_Pb200(){
   init();
 }
+
 
 int Pb200::get_bouton_vert() const{
   return digitalRead(_pin_bt_vert);
@@ -291,32 +287,24 @@ CONSTRUCTEURS
 */
 
 
-Pb300::Pb300(){
+Pb300::Pb300():Pbduino(), _pin_photo_1(A0), _pin_photo_2(A1){
   _pin_led_verte = 2;
   _pin_led_rouge = 4;
   _pin_buzzer = 6;
-  _pin_photo_1 = A0;
-  _pin_photo_2 = A1;
-  //TODO : lcd = ...
-  //_lcd_rows = 4
-  //_lcd_cols = 20;
-  //_lcd_i2c_addr = 0x20;
-}
-Pb300::Pb300(uint8_t pin_led_verte, uint8_t pin_led_rouge, uint8_t pin_buzzer, uint8_t pin_photo_1, uint8_t pin_photo2, uint8_t lcd_i2c_addr, uint8_t lcd_rows, uint8_t lcd_cols){
-  _pin_led_verte = pin_led_verte;
-  _pin_led_rouge = pin_led_rouge;
-  _pin_buzzer = pin_buzzer;
-  _pin_photo_1 = pin_photo_1;
-  _pin_photo_2 = pin_photo2;
-  //_lcd_i2c_addr = lcd_i2c_addr;
-  //_lcd_rows = lcd_rows;
-  //_lcd_cols = lcd_cols;
+  init();
+  _lcd = new LiquidCrystal_I2C(0x20,20,4);
+  _lcd->init();
+  _lcd->backlight();
+  _lcd->print("PIERRON - PB300");
 }
 
-void Pb300::_Pb300(){
-
+Pb300::~Pb300(){
+  delete _lcd;
 }
 
+LiquidCrystal_I2C Pb300::lcd(){
+  return *_lcd;
+}
 
 int Pb300::get_photo1() const{
   return analogRead(_pin_photo_1);
