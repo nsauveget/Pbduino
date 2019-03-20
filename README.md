@@ -17,6 +17,9 @@ en collaboration avec Patrice Buffet qui en a conçu le principe et développé 
 
 Pour la version protype cette bibliothèque est livrée avec un fork de LiquidCrystal_I2C.
 
+## Installation
+
+Copier le dossier dans le repertoir librairies du programme arduino.
 
 ## Example
 
