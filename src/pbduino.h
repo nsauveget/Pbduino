@@ -48,8 +48,7 @@ class Pbduino{
   void buzzer() const;
   void noBuzzer() const;
   //void playBuzzer(int n, ...) const;
-
-  //void init_lcd();
+  void init();
 
   protected :
 
@@ -61,7 +60,7 @@ class Pbduino{
 
   uint8_t _pin_buzzer;
   unsigned int _tone_frequency;
-  void init();
+
 
 };
 

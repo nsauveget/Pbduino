@@ -1,7 +1,6 @@
 
 #include "pbduino.h"
 
-// Déclaration des variables
 float distance;
 Pb100 pb100; // Déclaration de ma maquette PB100
 
