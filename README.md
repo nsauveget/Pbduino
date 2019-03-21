@@ -11,17 +11,17 @@ Email: fthome@pierron.fr
 
 # Pbduino Bibliothèque
 
-Une bibliothèque pour aider à la programmation des maquettes arduino PB100, PB200, PB300.
-Ces maquettes à base d'arduino nano sont commercialisées par la société Pierron (https://www.pierron.fr/)
-en collaboration avec Patrice Buffet qui en a conçu le principe et développé la pédagogie.
+Il s'agit d'une bibliothèque pour aider à la programmation des maquettes Arduino™ PB100, PB200 et PB300.
+Ces maquettes à base d'Arduino™ Nano sont commercialisées par la société PIERRON - ASCO & CELDA (https://www.pierron.fr/)
+en collaboration avec Patrice BUFFET, qui en a conçu le principe et développé la pédagogie.
 
 Pour la version protype cette bibliothèque est livrée avec un fork de LiquidCrystal_I2C.
 
 ## Installation
 
-Copier le dossier dans le repertoir librairies du programme arduino.
+Copier le dossier dans le repertoire Librairies du programme Arduino™.
 
-## Example
+## Exemple
 
   #include "pbduino.h"
   float distance;
